@@ -28,3 +28,20 @@ Thumbs.db
 # 依赖
 vendor/
 node_modules/
+
+# 用户上传文件
+uploads/
+
+# 运行时/缓存目录（storage 里除了已排除的数据库和日志，整体也建议不入库）
+storage/
+
+# 临时备份文件
+*.bak
+*.bak.*
+
+# 图片素材
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
