@@ -1,0 +1,36 @@
+# 梵燊科技 官网 — Apache 配置（宝塔默认 Apache）
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  
+  # 设置默认首页
+  DirectoryIndex index.html index.php
+</IfModule>
+
+# 安全加固
+<FilesMatch "\.(env|config\.php|db\.php|sql|log)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order Allow,Deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+<FilesMatch "\.bak(\.|$)">
+  Require all denied
+</FilesMatch>
+
+# 禁止列出目录
+Options -Indexes
+
+# 字符集
+AddDefaultCharset UTF-8
+
+# PHP 设置（如果需要覆盖）
+<IfModule mod_php.c>
+  php_value upload_max_filesize 10M
+  php_value post_max_size 10M
+  php_value default_charset UTF-8
+</IfModule>

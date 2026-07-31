@@ -1,0 +1,30 @@
+# 敏感配置
+config/api.php
+.env
+.env.*
+
+# 数据库
+storage/*.db
+storage/*.sqlite
+storage/*.sqlite3
+*.db
+*.sqlite
+
+# 日志
+*.log
+storage/logs/
+
+# 安装文件
+install.php.disabled
+
+# IDE
+.vscode/
+.idea/
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 依赖
+vendor/
+node_modules/
