@@ -1,6 +1,6 @@
-# Qyfanshen Portal
+# Fanshen Tech · AI Product Platform
 
-> Official Portal & Business Hub for Fanshen Group
+> Let no enterprise be unable to use AI. — Empowering businesses with AI.
 
 ![preview](screenshots/preview.png)
 
@@ -9,17 +9,20 @@
 ## Features
 
 ### Core Features
-- AI-powered chat assistant integrated with OpenAI-compatible APIs (configurable)
-- WeChat Pay full flow: order creation, async notify, status query
-- User authentication with bcrypt + CSRF protection + rate limiting
-- Admin panel: login, messages, payment records, products management
-- Account center: profile, orders, history, secure logout
-- Privacy-first: HTTPS enforcement, security headers, sensitive file isolation
+- 🎯 **AI Product Service Platform** — One-stop enterprise AI enablement portal
+- 🌐 **Multi-page navigation**: Home · AI Product Platform · About · Business Model · Privacy · Contact
+- 🚀 **AI Empowerment Promise**: "Let no enterprise be unable to use AI"
+- 💡 **Corporate Vision**: Enterprise AI-ization, human AI accessibility, high-intelligence & automation
+- 📊 **Live metrics**: 6 categories · 100+ integrations · 8 core capabilities · 100K+ reach
+- 📬 **Engagement**: "Explore Solutions" and "Try Now" CTAs directly in the hero
+- 📄 **Compliance built-in**: Privacy policy, terms of service, contact channels
 
 ### Technical Features
-- Modern web stack: PHP 8+ · MySQL 5.7+ / SQLite · jQuery · Nginx/Apache
+- Modern web stack: HTML5 · CSS3 · Vanilla JavaScript · Nginx/Apache
 - Privacy-first: HTTPS enforced, security headers, sensitive-file isolation
 - SEO-ready: `sitemap.xml`, `robots.txt`, semantic markup
+- Dark theme with gradient/glassmorphism hero section
+- Lightweight, deployable on any static host
 - License: MIT
 
 ## Screenshots
@@ -141,7 +144,7 @@ Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) first.
 ## Acknowledgments
 
 - Inspired by [x007xyz/flycut-caption](https://github.com/x007xyz/flycut-caption) repo style
-- Built by the Fanshen Group engineering team
+- Built by the Fanshen Tech team
 
 ## Support
 
