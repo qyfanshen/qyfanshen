@@ -45,3 +45,10 @@ storage/
 *.png
 *.gif
 *.webp
+.env.local
+.env.*.local
+.user.ini
+storage/payment.key
+.next/
+.git/
+runtime/

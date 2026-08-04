@@ -1,5 +1,4 @@
 <?php
-require_once '../../includes/csrf.php';
 declare(strict_types=1);
 
 function checkRateLimit(string $key, int $max = 10, int $win = 60): void {

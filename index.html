@@ -12,6 +12,7 @@
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"清远凡神","url":"https://qyfanshen.com/"}</script>
     <title>梵燊科技 | AI产业服务平台</title>
   <link rel="stylesheet" href="css/style.css?v=20250730d">
+  <link rel="stylesheet" href="css/user-auth.css?v=20260731a">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%233b82f6'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='18' font-weight='bold'>F</text></svg>">
 </head>
 <body>
@@ -26,7 +27,7 @@
       </a>
       <nav class="nav" id="nav">
         <a href="#home" class="nav-link active">首页</a>
-        <a href="shop.php" class="nav-link nav-shop-link">梵燊商城</a>
+        <a href="shop.php" class="nav-link nav-shop-link">进入梵燊商城</a>
         <a href="#about" class="nav-link">关于我们</a>
         <a href="#business" class="nav-link">商业模式</a>
         <a href="#advantages" class="nav-link">核心优势</a>
@@ -37,6 +38,12 @@
         <a href="#roadmap" class="nav-link">发展蓝图</a>
         <a href="#recruit" class="nav-link">人才招聘</a>
         <a href="#contact" class="nav-link">联系我们</a>
+        <div class="user-nav">
+          <span data-auth-guest><button type="button" data-open-login>登录</button></span>
+          <span data-auth-guest><button type="button" class="user-register" data-open-register>注册</button></span>
+          <span data-auth-user hidden><a class="user-account" href="account.php"><span data-user-name></span> · 用户中心</a></span>
+          <span data-auth-user hidden><button type="button" data-user-logout>退出</button></span>
+        </div>
       </nav>
       <button class="menu-toggle" id="menuToggle" aria-label="菜单">
         <span></span><span></span><span></span>
@@ -977,7 +984,8 @@
         <div class="footer-col"><h4>生态合作</h4><a href="#honors">标准体系与联盟</a><a href="#recruit">人才招聘</a><a href="#contact">联系我们</a></div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 梵燊科技 Fanshen Technology. All rights reserved.</p>
+        <p>&copy; 2026 清远梵燊人工智能科技有限公司</p>
+        <p><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">粤ICP备2026080863号</a> | 公安联网备案号待取得后补充</p>
         <p>开放分享 · 拥抱变化 | <a href="#" class="privacy-trigger">隐私条款</a></p>
       </div>
     </div>
@@ -1060,5 +1068,6 @@
   </button>
 
   <script src="js/main.js?v=20250730d"></script>
+  <script src="js/user-auth.js?v=20260731a"></script>
 </body>
 </html>
