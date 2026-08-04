@@ -30,10 +30,6 @@
 
 ![首页预览](screenshots/preview.png)
 
-### 概览流程（大视口）
-
-![概览流程（大视口）](screenshots/flow-overview.png)
-
 ### 隐私政策页
 
 ![隐私政策页](screenshots/page-privacy.png)
