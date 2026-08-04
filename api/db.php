@@ -1,5 +1,4 @@
 <?php
-require_once '../../includes/csrf.php';
 declare(strict_types=1);
 
 /**
@@ -67,6 +66,8 @@ class DB {
         $settingsTable = $prefix . 'settings';
         $ordersTable = $prefix . 'payment_orders';
         $refundsTable = $prefix . 'payment_refunds';
+        $usersTable = $prefix . 'users';
+        $consentsTable = $prefix . 'user_consents';
         if ($engine === 'mysql') {
             self::$pdo->exec("CREATE TABLE IF NOT EXISTS `{$table}` (
                 `id`         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -100,6 +101,8 @@ class DB {
             self::$pdo->exec("CREATE TABLE IF NOT EXISTS `{$settingsTable}` (`setting_key` VARCHAR(80) PRIMARY KEY, `setting_value` LONGTEXT NOT NULL, `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
             self::$pdo->exec("CREATE TABLE IF NOT EXISTS `{$ordersTable}` (`id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, `out_trade_no` VARCHAR(40) NOT NULL UNIQUE, `amount` INT UNSIGNED NOT NULL, `description` VARCHAR(127) NOT NULL, `status` VARCHAR(20) NOT NULL DEFAULT 'NOTPAY', `transaction_id` VARCHAR(64) NOT NULL DEFAULT '', `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, `paid_at` DATETIME NULL, INDEX `idx_payment_status` (`status`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
             self::$pdo->exec("CREATE TABLE IF NOT EXISTS `{$refundsTable}` (`id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, `out_trade_no` VARCHAR(40) NOT NULL, `out_refund_no` VARCHAR(40) NOT NULL UNIQUE, `refund_id` VARCHAR(64) NOT NULL DEFAULT '', `amount` INT UNSIGNED NOT NULL, `reason` VARCHAR(80) NOT NULL DEFAULT '', `status` VARCHAR(24) NOT NULL DEFAULT 'PROCESSING', `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, INDEX `idx_refund_order` (`out_trade_no`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+            self::$pdo->exec("CREATE TABLE IF NOT EXISTS `{$usersTable}` (`id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, `phone` VARCHAR(20) NOT NULL UNIQUE, `nickname` VARCHAR(50) NOT NULL, `password_hash` VARCHAR(255) NOT NULL, `status` ENUM('active','deleted') NOT NULL DEFAULT 'active', `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `deleted_at` DATETIME NULL, INDEX `idx_user_status` (`status`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+            self::$pdo->exec("CREATE TABLE IF NOT EXISTS `{$consentsTable}` (`id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, `user_id` BIGINT UNSIGNED NOT NULL, `agreement_version` VARCHAR(20) NOT NULL, `privacy_version` VARCHAR(20) NOT NULL, `ip` VARCHAR(45) NOT NULL DEFAULT '', `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, INDEX `idx_consent_user` (`user_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
         } else {
             self::$pdo->exec("CREATE TABLE IF NOT EXISTS `{$table}` (
                 id         INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -127,7 +130,24 @@ class DB {
             self::$pdo->exec("CREATE TABLE IF NOT EXISTS `{$settingsTable}` (setting_key TEXT PRIMARY KEY, setting_value TEXT NOT NULL, updated_at TEXT NOT NULL DEFAULT (datetime('now','localtime')))");
             self::$pdo->exec("CREATE TABLE IF NOT EXISTS `{$ordersTable}` (id INTEGER PRIMARY KEY AUTOINCREMENT, out_trade_no TEXT NOT NULL UNIQUE, amount INTEGER NOT NULL, description TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'NOTPAY', transaction_id TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL DEFAULT (datetime('now','localtime')), paid_at TEXT)");
             self::$pdo->exec("CREATE TABLE IF NOT EXISTS `{$refundsTable}` (id INTEGER PRIMARY KEY AUTOINCREMENT, out_trade_no TEXT NOT NULL, out_refund_no TEXT NOT NULL UNIQUE, refund_id TEXT NOT NULL DEFAULT '', amount INTEGER NOT NULL, reason TEXT NOT NULL DEFAULT '', status TEXT NOT NULL DEFAULT 'PROCESSING', created_at TEXT NOT NULL DEFAULT (datetime('now','localtime')), updated_at TEXT NOT NULL DEFAULT (datetime('now','localtime')))");
+            self::$pdo->exec("CREATE TABLE IF NOT EXISTS `{$usersTable}` (id INTEGER PRIMARY KEY AUTOINCREMENT, phone TEXT NOT NULL UNIQUE, nickname TEXT NOT NULL, password_hash TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'active', created_at TEXT NOT NULL DEFAULT (datetime('now','localtime')), updated_at TEXT NOT NULL DEFAULT (datetime('now','localtime')), deleted_at TEXT)");
+            self::$pdo->exec("CREATE TABLE IF NOT EXISTS `{$consentsTable}` (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, agreement_version TEXT NOT NULL, privacy_version TEXT NOT NULL, ip TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))) ");
         }
+        self::ensureOrderColumns($ordersTable, $engine);
+    }
+
+    private static function ensureOrderColumns(string $table, string $engine): void {
+        if ($engine === 'mysql') {
+            $columns = self::$pdo->query("SHOW COLUMNS FROM `{$table}`")->fetchAll(PDO::FETCH_COLUMN);
+            if (!in_array('user_id', $columns, true)) self::$pdo->exec("ALTER TABLE `{$table}` ADD `user_id` BIGINT UNSIGNED NOT NULL DEFAULT 0, ADD INDEX `idx_order_user` (`user_id`)");
+            if (!in_array('product_id', $columns, true)) self::$pdo->exec("ALTER TABLE `{$table}` ADD `product_id` INT UNSIGNED NOT NULL DEFAULT 0");
+            if (!in_array('product_name', $columns, true)) self::$pdo->exec("ALTER TABLE `{$table}` ADD `product_name` VARCHAR(120) NOT NULL DEFAULT ''");
+            return;
+        }
+        $columns = array_column(self::$pdo->query("PRAGMA table_info(`{$table}`)")->fetchAll(), 'name');
+        if (!in_array('user_id', $columns, true)) self::$pdo->exec("ALTER TABLE `{$table}` ADD COLUMN user_id INTEGER NOT NULL DEFAULT 0");
+        if (!in_array('product_id', $columns, true)) self::$pdo->exec("ALTER TABLE `{$table}` ADD COLUMN product_id INTEGER NOT NULL DEFAULT 0");
+        if (!in_array('product_name', $columns, true)) self::$pdo->exec("ALTER TABLE `{$table}` ADD COLUMN product_name TEXT NOT NULL DEFAULT ''");
     }
 
     // ========== CRUD ==========
@@ -253,9 +273,9 @@ class DB {
         $pdo->prepare($sql)->execute([$key, $value]);
     }
 
-    public static function createPaymentOrder(string $number, int $amount, string $description): void {
+    public static function createPaymentOrder(string $number, int $amount, string $description, int $userId, int $productId, string $productName): void {
         $pdo=self::conn(); $cfg=require __DIR__.'/config.php'; $table=$cfg['prefix'].'payment_orders';
-        $pdo->prepare("INSERT INTO `{$table}` (out_trade_no,amount,description) VALUES (?,?,?)")->execute([$number,$amount,$description]);
+        $pdo->prepare("INSERT INTO `{$table}` (out_trade_no,amount,description,user_id,product_id,product_name) VALUES (?,?,?,?,?,?)")->execute([$number,$amount,$description,$userId,$productId,$productName]);
     }
 
     public static function paymentOrder(string $number): ?array {
@@ -289,6 +309,47 @@ class DB {
     public static function updateRefund(string $refundNo,string $status,string $refundId=''): void {
         $pdo=self::conn();$cfg=require __DIR__.'/config.php';$table=$cfg['prefix'].'payment_refunds';
         $pdo->prepare("UPDATE `{$table}` SET status=?,refund_id=?,updated_at=CURRENT_TIMESTAMP WHERE out_refund_no=?")->execute([$status,$refundId,$refundNo]);
+    }
+
+    public static function createUser(string $phone, string $nickname, string $passwordHash, string $ip): int {
+        $pdo=self::conn();$cfg=require __DIR__.'/config.php';$users=$cfg['prefix'].'users';$consents=$cfg['prefix'].'user_consents';
+        $pdo->beginTransaction();
+        try {
+            $pdo->prepare("INSERT INTO `{$users}` (phone,nickname,password_hash) VALUES (?,?,?)")->execute([$phone,$nickname,$passwordHash]);
+            $id=(int)$pdo->lastInsertId();
+            $pdo->prepare("INSERT INTO `{$consents}` (user_id,agreement_version,privacy_version,ip) VALUES (?,?,?,?)")->execute([$id,'1.0','1.0',$ip]);
+            $pdo->commit();return $id;
+        } catch (Throwable $e) { if($pdo->inTransaction())$pdo->rollBack();throw $e; }
+    }
+
+    public static function userByPhone(string $phone): ?array {
+        $pdo=self::conn();$cfg=require __DIR__.'/config.php';$table=$cfg['prefix'].'users';$stmt=$pdo->prepare("SELECT * FROM `{$table}` WHERE phone=? AND status='active'");$stmt->execute([$phone]);return $stmt->fetch()?:null;
+    }
+
+    public static function userById(int $id): ?array {
+        $pdo=self::conn();$cfg=require __DIR__.'/config.php';$table=$cfg['prefix'].'users';$stmt=$pdo->prepare("SELECT id,phone,nickname,status,created_at FROM `{$table}` WHERE id=? AND status='active'");$stmt->execute([$id]);return $stmt->fetch()?:null;
+    }
+
+    public static function updateUserProfile(int $id,string $nickname): void {
+        $pdo=self::conn();$cfg=require __DIR__.'/config.php';$table=$cfg['prefix'].'users';$pdo->prepare("UPDATE `{$table}` SET nickname=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND status='active'")->execute([$nickname,$id]);
+    }
+
+    public static function updateUserPassword(int $id,string $hash): void {
+        $pdo=self::conn();$cfg=require __DIR__.'/config.php';$table=$cfg['prefix'].'users';$pdo->prepare("UPDATE `{$table}` SET password_hash=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND status='active'")->execute([$hash,$id]);
+    }
+
+    public static function deleteUser(int $id): void {
+        $pdo=self::conn();$cfg=require __DIR__.'/config.php';$table=$cfg['prefix'].'users';$phone='deleted_'.$id.'_'.bin2hex(random_bytes(5));
+        $pdo->prepare("UPDATE `{$table}` SET phone=?,nickname='已注销用户',password_hash='',status='deleted',deleted_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$phone,$id]);
+    }
+
+    public static function userHasPendingOrders(int $userId): bool {
+        $pdo=self::conn();$cfg=require __DIR__.'/config.php';$orders=$cfg['prefix'].'payment_orders';$refunds=$cfg['prefix'].'payment_refunds';
+        $stmt=$pdo->prepare("SELECT COUNT(*) FROM `{$orders}` o LEFT JOIN `{$refunds}` r ON r.out_trade_no=o.out_trade_no WHERE o.user_id=? AND (o.status='NOTPAY' OR r.status='PROCESSING')");$stmt->execute([$userId]);return (int)$stmt->fetchColumn()>0;
+    }
+
+    public static function userOrders(int $userId): array {
+        $pdo=self::conn();$cfg=require __DIR__.'/config.php';$table=$cfg['prefix'].'payment_orders';$stmt=$pdo->prepare("SELECT * FROM `{$table}` WHERE user_id=? ORDER BY id DESC");$stmt->execute([$userId]);$orders=$stmt->fetchAll();foreach($orders as &$order)$order['refund']=self::refundForOrder((string)$order['out_trade_no']);return $orders;
     }
 
     /** 测试数据库连接 */

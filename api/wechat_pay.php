@@ -1,5 +1,4 @@
 <?php
-require_once '../../includes/csrf.php';
 declare(strict_types=1);
 require_once __DIR__ . '/db.php';
 
@@ -55,7 +54,7 @@ final class WechatPay {
         $key=openssl_pkey_get_private($this->config['private_key']); if(!$key) throw new RuntimeException('商户 API 私钥格式无效');
         if(!openssl_sign($message,$signature,$key,OPENSSL_ALGO_SHA256)) throw new RuntimeException('支付请求签名失败');
         $token=sprintf('WECHATPAY2-SHA256-RSA2048 mchid="%s",nonce_str="%s",timestamp="%s",serial_no="%s",signature="%s"',$this->config['mchid'],$nonce,$timestamp,$this->config['serial'],base64_encode($signature));
-        $ch=curl_init('https://api.mch.weixin.qq.com'.$path); curl_setopt_array($ch,[CURLOPT_CUSTOMREQUEST=>$method,CURLOPT_RETURNTRANSFER=>true,CURLOPT_TIMEOUT=>15,CURLOPT_HTTPHEADER=>['Accept: application/json','Content-Type: application/json','Authorization: '.$token],CURLOPT_POSTFIELDS=>$method==='POST'?$body:null]);
+        $ch=curl_init('https://api.mch.weixin.qq.com'.$path); curl_setopt_array($ch,[CURLOPT_CUSTOMREQUEST=>$method,CURLOPT_RETURNTRANSFER=>true,CURLOPT_TIMEOUT=>15,CURLOPT_USERAGENT=>'qyfanshen.com-wechatpay/1.0',CURLOPT_HTTPHEADER=>['Accept: application/json','Content-Type: application/json','Authorization: '.$token],CURLOPT_POSTFIELDS=>$method==='POST'?$body:null]);
         $raw=curl_exec($ch); $status=(int)curl_getinfo($ch,CURLINFO_HTTP_CODE); $error=curl_error($ch); curl_close($ch);
         if($raw===false || $error!=='') throw new RuntimeException('无法连接微信支付服务');
         $data=json_decode($raw,true); if($status<200 || $status>=300) { error_log('Wechat Pay error: '.$raw); throw new RuntimeException((string)($data['message']??'微信支付请求失败')); }

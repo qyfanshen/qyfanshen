@@ -1,5 +1,4 @@
 <?php
-require_once '../../includes/csrf.php';
 declare(strict_types=1);
 
 function envValue(string $key, ?string $default = null): ?string

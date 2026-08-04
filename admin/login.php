@@ -1,5 +1,4 @@
-<?php
-require_once '../../includes/csrf.php'; declare(strict_types=1); require_once 'auth.php';
+<?php declare(strict_types=1); require_once 'auth.php';
 if (isLoggedIn()) { header('Location: messages.php'); exit; }
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
