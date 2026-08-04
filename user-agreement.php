@@ -75,7 +75,7 @@
       <p>官方客服热线：13360924677</p>
       <p>联系邮箱：fanshen1314@qq.com</p>
       <p>公司地址：清远市清城区东城街道附城大道78号盈捷数字经济产业园12号楼1层</p>
-      <p class="footer-note">© 2026 清远梵燊人工智能科技有限公司<br><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">粤ICP备2026080863号</a> | <a href="https://beian.mps.gov.cn/#/query/webSearch?code=44180202001121" target="_blank" rel="noopener">粤公网安备44180202001121号</a></p>
+      <p class="footer-note">© 2026 清远梵燊人工智能科技有限公司<br><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">粤ICP备2026080863号</a> | 公安联网备案号待取得后补充</p>
     </article>
   </main>
 </body>

@@ -30,10 +30,6 @@ Real screenshots captured via local server + headless Edge:
 
 ![Home page preview](screenshots/preview.png)
 
-### Overview flow (extended viewport)
-
-![Overview flow (extended viewport)](screenshots/flow-overview.png)
-
 ### Privacy policy page
 
 ![Privacy policy page](screenshots/page-privacy.png)

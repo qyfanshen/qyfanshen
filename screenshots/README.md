@@ -10,11 +10,11 @@
 
 > 首页预览
 
-### `flow-overview.png`
+### `mobile-home.png`
 
-![概览流程（大视口）](flow-overview.png)
+![移动端响应式（390×844）](mobile-home.png)
 
-> 概览流程（大视口）
+> 移动端响应式（390×844）
 
 ### `page-privacy.png`
 
