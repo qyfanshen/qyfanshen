@@ -10,17 +10,17 @@
 
 > 首页预览
 
-### `mobile-home.png`
-
-![移动端响应式（390×844）](mobile-home.png)
-
-> 移动端响应式（390×844）
-
 ### `page-privacy.png`
 
 ![隐私政策页](page-privacy.png)
 
 > 隐私政策页
+
+### `wechat-qrcode.png`
+
+![wechat-qrcode.png](wechat-qrcode.png)
+
+> wechat-qrcode.png
 
 ## 如何重新生成截图
 
