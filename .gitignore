@@ -49,6 +49,10 @@ storage/
 .env.*.local
 .user.ini
 storage/payment.key
+*.zip
+*.tar.gz
+*.tgz
+*.rar
 .next/
 .git/
 runtime/
