@@ -3,6 +3,15 @@
 > 让天下没有不会用 AI 的企业——以 AI 赋能万千企业。
 
 ![预览](screenshots/preview.png)
+<p align="center">
+  <a href="https://github.com/qyfanshen/qyfanshen"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="许可证"></a>
+  <a href="https://github.com/qyfanshen/qyfanshen/actions"><img src="https://img.shields.io/github/actions/workflow/status/qyfanshen/qyfanshen/ci.yml?branch=master&label=CI" alt="CI"></a>
+  <a href="https://img.shields.io/github/languages/code-size/qyfanshen/qyfanshen"><img src="https://img.shields.io/github/languages/code-size/qyfanshen/qyfanshen" alt="代码体积"></a>
+  <a href="https://github.com/qyfanshen/qyfanshen/issues"><img src="https://img.shields.io/github/issues/qyfanshen/qyfanshen" alt="Issues"></a>
+  <a href="https://github.com/qyfanshen/qyfanshen/stargazers"><img src="https://img.shields.io/github/stars/qyfanshen/qyfanshen?style=social" alt="Stars"></a>
+</p>
+
+---
 
 [English](README.md) | [中文](README.zh.md)
 
@@ -51,7 +60,7 @@
 
 ```bash
 # 克隆仓库
-git clone https://gitee.com/qingyuanfanshenrengongzhineng/qyfanshen.git
+git clone https://gitee.com/qyfanshen/qyfanshen.git
 cd qyfanshen.com
 
 # （仅 PHP 站点）复制环境变量模板并填入真实值
@@ -232,34 +241,22 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 </FilesMatch>
 ```
 
-### 3. Docker（仅 Next.js）
-
-```dockerfile
-FROM node:22-alpine AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-
-FROM node:22-alpine
-WORKDIR /app
-COPY --from=build /app/.next ./.next
-COPY --from=build /app/public ./public
-COPY --from=build /app/package*.json ./
-RUN npm ci --omit=dev
-EXPOSE 3000
-CMD ["npm", "start"]
-```
-
 ### 4. 部署后检查清单
 
 - [ ] HTTPS 已生效（浏览器锁图标）
-- [ ] `https://https://qyfanshen.com/.env` 返回 404
+- [ ] `https://qyfanshen.com/.env` 返回 404
 - [ ] 安全响应头可在 https://securityheaders.com 验证为 A 或 A+
 - [ ] sitemap.xml 可访问
 - [ ] robots.txt 可访问
 - [ ] 隐私页 `privacy.html` 可访问
+
+## 行为准则
+
+请阅读我们的[行为准则](CODE_OF_CONDUCT.md)——友善待人，互相尊重。
+
+## 安全
+
+发现漏洞？请先阅读[安全政策](SECURITY.md)再报告。
 
 ## 贡献
 
@@ -300,3 +297,9 @@ CMD ["npm", "start"]
 其他联系方式：
 - 集团主站：<https://qyfanshen.com>
 - 问题反馈：请使用仓库内的 issue 模板
+
+---
+
+**版权所有 © 2026 [qyfanshen](https://github.com/qyfanshen)。保留所有权利。**
+
+基于 [MIT 许可证](LICENSE) 开源。
