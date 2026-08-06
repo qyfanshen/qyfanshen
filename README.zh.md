@@ -15,6 +15,12 @@
 
 [English](README.md) | [中文](README.zh.md)
 
+## 核心使用场景
+
+- **🤖 企业 AI 赋能** — 为企业提供开箱即用的 AI 产品服务平台。
+- **🏢 集团门户** — 官网首页：产品、关于我们、商业模式与联系方式一应俱全。
+- **📣 线索获取** — 「探索解决方案 / 立即试用」按钮引导访客转化为咨询。
+
 ## 特色功能
 
 ### 核心功能
@@ -48,38 +54,17 @@
 
 ---
 
-## 快速开始
+## 快速部署
 
-### 前置要求
-- Git
-- Nginx / Apache（或任何静态/PHP 主机）
-- 静态站：任何浏览器即可
-- PHP 站：PHP 8.0+、MySQL 5.7+ 或 SQLite
-
-### 安装步骤
+三行命令即可启动：
 
 ```bash
-# 克隆仓库
 git clone https://gitee.com/qyfanshen/qyfanshen.git
 cd qyfanshen.com
-
-# （仅 PHP 站点）复制环境变量模板并填入真实值
-cp .env.example .env
-# 编辑 .env
+python3 -m http.server 8080   # open http://localhost:8080
 ```
 
-### 本地预览
-
-```bash
-# 静态站
-python -m http.server 8080
-
-# PHP 站
-php -S 127.0.0.1:8080 -t .
-```
-
-然后打开 http://localhost:8080
-
+> 完整步骤（Nginx、环境变量、生产部署）见 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)。
 ## 使用指南
 
 1. 配置环境（PHP 站填写 `.env`，静态站配置部署参数）
@@ -256,11 +241,15 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 ## 安全
 
-发现漏洞？请先阅读[安全政策](SECURITY.md)再报告。
+发现安全漏洞？💖 非常感谢你负责任地披露！
+
+在报告之前，请先花一分钟看看 [安全政策](SECURITY.md)，这样能帮助我们更快响应，也避免遗漏重要信息。
 
 ## 贡献
 
-欢迎贡献！请先阅读 [CONTRIBUTING.md](CONTRIBUTING.md)，并使用 [issue 模板](.github/ISSUE_TEMPLATE/) 与 [PR 模板](.github/PULL_REQUEST_TEMPLATE.md)。
+我们非常欢迎你的贡献！💖
+
+如果你愿意参与，可以先看看 [CONTRIBUTING.md](CONTRIBUTING.md)，并使用 [Issue 模板](.github/ISSUE_TEMPLATE/) 与 [PR 模板](.github/PULL_REQUEST_TEMPLATE.md)，这样我们协作起来会更顺畅。🙏
 
 ## 许可证
 
