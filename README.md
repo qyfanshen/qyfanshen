@@ -2,6 +2,8 @@
 
 > Let no enterprise be unable to use AI. — Empowering businesses with AI.
 
+> 🚀 **[Live Demo](https://qyfanshen.com)** · 📚 **[Docs](docs/)** · 📋 **[Quick Start](docs/QUICKSTART.md)** · 🐛 **[Report Bug](https://github.com/qyfanshen/qyfanshen/issues)** · ⭐ **[Star](https://github.com/qyfanshen/qyfanshen)**
+
 ![preview](screenshots/preview.png)
 <p align="center">
   <a href="https://github.com/qyfanshen/qyfanshen"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
