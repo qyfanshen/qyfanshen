@@ -13,6 +13,8 @@
 
 ---
 
+**Fanshen Technology** is the corporate AI product platform — 'Let no enterprise be unable to use AI', empowering businesses with affordable intelligent transformation.
+
 [English](README.md) | [中文](README.zh.md)
 
 ## Key Scenarios
